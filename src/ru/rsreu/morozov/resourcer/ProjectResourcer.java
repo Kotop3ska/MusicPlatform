@@ -13,6 +13,11 @@ public class ProjectResourcer implements Resourcer {
 	private ProjectResourcer() {
 	}
 
+	public static Resourcer getInstance(String propertyName) {
+		ResourcerHolder.resourcer.setPropertyName(propertyName);
+		return ResourcerHolder.resourcer;
+	}
+
 	public static Resourcer getInstance() {
 		return ResourcerHolder.resourcer;
 	}

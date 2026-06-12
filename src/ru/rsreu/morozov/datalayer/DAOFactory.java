@@ -7,4 +7,10 @@ public abstract class DAOFactory {
 		return result;
 	}
 
+	abstract public SubscriptionDAO getSubscriptionDAO();
+
+	abstract public ArtistDAO getArtistDAO();
+
+	abstract public LabelDAO getLabelDAO();
+
 }
