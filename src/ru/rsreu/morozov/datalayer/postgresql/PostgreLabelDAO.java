@@ -12,66 +12,40 @@ import java.util.List;
 public class PostgreLabelDAO implements LabelDAO {
 	private final Connection connection;
 	private static Resourcer resourcer = ProjectResourcer.getInstance("resources.queries");
-	private static final String SELECT_ALL_LABELS = PostgreLabelDAO.resourcer.getString("sql.label.select.all");
-	private static final String ADD_LABEL = PostgreLabelDAO.resourcer.getString("sql.label.add");
-	private static final String DELETE_LABEL = PostgreLabelDAO.resourcer.getString("sql.label.delete");
-	private static final String UPDATE_LABEL = PostgreLabelDAO.resourcer.getString("sql.label.update");
+	private static final String SELECT_ALL = resourcer.getString("sql.label.select.all");
+	private static final String ADD = resourcer.getString("sql.label.add");
+	private static final String UPDATE = resourcer.getString("sql.label.update");
+	private static final String DELETE = resourcer.getString("sql.label.delete");
 
-	public PostgreLabelDAO(Connection connection) {
-		this.connection = connection;
-	}
+	public PostgreLabelDAO(Connection connection) { this.connection = connection; }
 
 	@Override
 	public List<Label> getAllLabels() {
-		List<Label> labeles = new ArrayList<>();
-
-		try (Statement statement = this.connection.createStatement();
-			 ResultSet rs = statement.executeQuery(PostgreLabelDAO.SELECT_ALL_LABELS)) {
-			while (rs.next()) {
-				Label label = new Label(rs.getString("name"),
-						rs.getInt("foundation_year"));
-				labeles.add(label);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			labeles.add(Label.DEFAULT);
-		}
-		return labeles;
+		List<Label> list = new ArrayList<>();
+		try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(SELECT_ALL)) {
+			while (rs.next()) list.add(new Label(rs.getLong("label_id"), rs.getString("name"), rs.getInt("foundation_year")));
+		} catch (SQLException e) { e.printStackTrace(); }
+		return list;
 	}
 
 	@Override
 	public void addNewLabel(String name, int foundationYear) {
-		try (CallableStatement statement = this.connection.prepareCall(PostgreLabelDAO.ADD_LABEL)) {
-			statement.setString(1, name);
-			statement.setInt(2, foundationYear);
-
-			statement.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		try (PreparedStatement ps = connection.prepareStatement(ADD)) {
+			ps.setString(1, name); ps.setInt(2, foundationYear); ps.execute();
+		} catch (SQLException e) { e.printStackTrace(); }
 	}
 
 	@Override
-	public void deleteLabelByName(String name) {
-		try (CallableStatement statement = this.connection.prepareCall(PostgreLabelDAO.DELETE_LABEL)) {
-			statement.setString(1, name);
-
-			statement.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public void updateLabel(long id, String name, int foundationYear) {
+		try (PreparedStatement ps = connection.prepareStatement(UPDATE)) {
+			ps.setLong(1, id); ps.setString(2, name); ps.setInt(3, foundationYear); ps.execute();
+		} catch (SQLException e) { e.printStackTrace(); }
 	}
 
 	@Override
-	public void updateLabelByName(String oldName, String newName, int foundationYear) {
-		try (CallableStatement statement = this.connection.prepareCall(PostgreLabelDAO.UPDATE_LABEL)) {
-			statement.setString(1, oldName);
-			statement.setString(2, newName);
-			statement.setInt(3, foundationYear);
-
-			statement.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public void deleteLabel(long id) {
+		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
+			ps.setLong(1, id); ps.execute();
+		} catch (SQLException e) { e.printStackTrace(); }
 	}
 }

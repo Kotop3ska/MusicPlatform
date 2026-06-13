@@ -13,4 +13,20 @@ public abstract class DAOFactory {
 
 	abstract public LabelDAO getLabelDAO();
 
+	abstract public DashboardDAO getDashboardDAO();
+
+	abstract public AlbumDAO getAlbumDAO();
+
+	abstract public TrackDAO getTrackDAO();
+
+	abstract public GenreDAO getGenreDAO();
+
+	abstract public UserDAO getUserDAO();
+
+	abstract public ReviewDAO getReviewDAO();
+
+	abstract public PlaylistDAO getPlaylistDAO();
+
+	abstract public CollectionDAO getCollectionDAO();
+
 }
