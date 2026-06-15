@@ -20,7 +20,7 @@ public class PostgreDashboardDAO implements DashboardDAO {
 			if (rs.next()) return new DashboardStats(rs.getLong("user_count"), rs.getLong("track_count"),
 					rs.getLong("album_count"), rs.getLong("subscription_count"),
 					rs.getLong("artist_count"), rs.getLong("genre_count"));
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return DashboardStats.DEFAULT;
 	}
 }

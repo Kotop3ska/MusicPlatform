@@ -27,7 +27,7 @@ public class PostgrePlaylistDAO implements PlaylistDAO {
 				list.add(new Playlist(rs.getLong("playlist_id"), rs.getString("playlist_name"), rs.getString("username"),
 						ts != null ? ts.toLocalDateTime().toLocalDate() : null, rs.getInt("track_count")));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -39,7 +39,7 @@ public class PostgrePlaylistDAO implements PlaylistDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) list.add(new Track(0, rs.getString("track_title"), rs.getString("artist_name"), "", rs.getInt("duration_seconds"), 0, ""));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 }

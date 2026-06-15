@@ -24,7 +24,7 @@ public class PostgreGenreDAO implements GenreDAO {
 		List<Genre> list = new ArrayList<>();
 		try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(SELECT_ALL)) {
 			while (rs.next()) list.add(new Genre(rs.getLong("genre_id"), rs.getString("genre_name")));
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -32,20 +32,20 @@ public class PostgreGenreDAO implements GenreDAO {
 	public void addNewGenre(String name) {
 		try (PreparedStatement ps = connection.prepareStatement(ADD)) {
 			ps.setString(1, name); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void updateGenre(long id, String name) {
 		try (PreparedStatement ps = connection.prepareStatement(UPDATE)) {
 			ps.setLong(1, id); ps.setString(2, name); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void deleteGenre(long id) {
 		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
 			ps.setLong(1, id); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 }

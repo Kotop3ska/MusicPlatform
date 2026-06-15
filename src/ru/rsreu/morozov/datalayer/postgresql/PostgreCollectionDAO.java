@@ -28,7 +28,7 @@ public class PostgreCollectionDAO implements CollectionDAO {
 		List<Collection> list = new ArrayList<>();
 		try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(SELECT_ALL)) {
 			while (rs.next()) list.add(new Collection(rs.getLong("collection_id"), rs.getString("title"), rs.getString("description"), rs.getInt("track_count")));
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -36,21 +36,21 @@ public class PostgreCollectionDAO implements CollectionDAO {
 	public void addNewCollection(String title, String description) {
 		try (PreparedStatement ps = connection.prepareStatement(ADD)) {
 			ps.setString(1, title); ps.setString(2, description); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void updateCollection(long id, String title, String description) {
 		try (PreparedStatement ps = connection.prepareStatement(UPDATE)) {
 			ps.setLong(1, id); ps.setString(2, title); ps.setString(3, description); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void deleteCollection(long id) {
 		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
 			ps.setLong(1, id); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class PostgreCollectionDAO implements CollectionDAO {
 				while (rs.next()) list.add(new Track(0, rs.getString("track_title"), rs.getString("artist_name"),
 						rs.getString("album_title"), rs.getInt("duration_seconds"), 0, rs.getString("genre_name")));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -70,13 +70,13 @@ public class PostgreCollectionDAO implements CollectionDAO {
 	public void addTrackToCollection(long collectionId, String trackTitle) {
 		try (PreparedStatement ps = connection.prepareStatement(ADD_TRACK)) {
 			ps.setLong(1, collectionId); ps.setString(2, trackTitle); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void removeTrackFromCollection(long collectionId, String trackTitle) {
 		try (PreparedStatement ps = connection.prepareStatement(REMOVE_TRACK)) {
 			ps.setLong(1, collectionId); ps.setString(2, trackTitle); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 }

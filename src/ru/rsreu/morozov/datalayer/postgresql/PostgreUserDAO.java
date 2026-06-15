@@ -26,22 +26,22 @@ public class PostgreUserDAO implements UserDAO {
 				list.add(new User(rs.getLong("user_id"), rs.getString("username"), rs.getString("email"),
 						rs.getString("subscription_name"), ts != null ? ts.toLocalDateTime().toLocalDate() : null));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
 	@Override
 	public User getUserDetail(long userId) {
-		try (CallableStatement cs = connection.prepareCall(DETAIL)) {
-			cs.setLong(1, userId);
-			try (ResultSet rs = cs.executeQuery()) {
+		try (PreparedStatement ps = connection.prepareStatement(DETAIL)) {
+			ps.setLong(1, userId);
+			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					Timestamp ts = rs.getTimestamp("created_at");
 					return new User(rs.getLong("user_id"), rs.getString("username"), rs.getString("email"),
 							rs.getString("subscription_name"), ts != null ? ts.toLocalDateTime().toLocalDate() : null);
 				}
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return User.DEFAULT;
 	}
 }

@@ -1,8 +1,14 @@
 package ru.rsreu.morozov.datalayer.postgresql;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import ru.rsreu.morozov.datalayer.ArtistDAO;
 import ru.rsreu.morozov.datalayer.LabelDAO;
@@ -98,13 +104,35 @@ public class PostgreDAOFactory extends DAOFactory {
 	}
 
 	private void connected() throws SQLException {
-		Resourcer resourcer = ProjectResourcer.getInstance("resources.connection");
-		String url = resourcer.getString("connection.url");
-		String user = resourcer.getString("connection.user");
-		String password = resourcer.getString("connection.password");
+		Properties props = loadConnectionProperties();
+		String url = props.getProperty("connection.url");
+		String user = props.getProperty("connection.user");
+		String password = props.getProperty("connection.password");
 
 		this.connection = DriverManager.getConnection(url, user, password);
 		System.out.println("Connection successfully!");
+	}
+
+	private Properties loadConnectionProperties() {
+		Path configPath = Paths.get("config", "connection.properties");
+		if (Files.exists(configPath)) {
+			try (FileInputStream fis = new FileInputStream(configPath.toFile())) {
+				Properties props = new Properties();
+				props.load(fis);
+				System.out.println("Loaded connection config from: " + configPath.toAbsolutePath());
+				return props;
+			} catch (IOException e) {
+				System.err.println("Failed to read " + configPath + ", falling back to classpath: " + e.getMessage());
+			}
+		}
+
+		Resourcer resourcer = ProjectResourcer.getInstance("resources.connection");
+		Properties props = new Properties();
+		props.setProperty("connection.url", resourcer.getString("connection.url"));
+		props.setProperty("connection.user", resourcer.getString("connection.user"));
+		props.setProperty("connection.password", resourcer.getString("connection.password"));
+		System.out.println("Loaded connection config from classpath");
+		return props;
 	}
 }
 

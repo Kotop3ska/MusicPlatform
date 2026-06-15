@@ -24,7 +24,7 @@ public class PostgreLabelDAO implements LabelDAO {
 		List<Label> list = new ArrayList<>();
 		try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(SELECT_ALL)) {
 			while (rs.next()) list.add(new Label(rs.getLong("label_id"), rs.getString("name"), rs.getInt("foundation_year")));
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -32,20 +32,20 @@ public class PostgreLabelDAO implements LabelDAO {
 	public void addNewLabel(String name, int foundationYear) {
 		try (PreparedStatement ps = connection.prepareStatement(ADD)) {
 			ps.setString(1, name); ps.setInt(2, foundationYear); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void updateLabel(long id, String name, int foundationYear) {
 		try (PreparedStatement ps = connection.prepareStatement(UPDATE)) {
 			ps.setLong(1, id); ps.setString(2, name); ps.setInt(3, foundationYear); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void deleteLabel(long id) {
 		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
 			ps.setLong(1, id); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 }

@@ -26,7 +26,7 @@ public class PostgreArtistDAO implements ArtistDAO {
 		List<Artist> list = new ArrayList<>();
 		try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(SELECT_ALL)) {
 			while (rs.next()) list.add(new Artist(rs.getLong("artist_id"), rs.getString("artist_name"), rs.getString("country"), rs.getString("label_name")));
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -34,21 +34,21 @@ public class PostgreArtistDAO implements ArtistDAO {
 	public void addNewArtist(String name, String country, String labelName) {
 		try (PreparedStatement ps = connection.prepareStatement(ADD)) {
 			ps.setString(1, name); ps.setString(2, country); ps.setString(3, labelName); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void updateArtist(long id, String name, String country, String labelName) {
 		try (PreparedStatement ps = connection.prepareStatement(UPDATE)) {
 			ps.setLong(1, id); ps.setString(2, name); ps.setString(3, country); ps.setString(4, labelName); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void deleteArtist(long id) {
 		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
 			ps.setLong(1, id); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class PostgreArtistDAO implements ArtistDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) list.add(new Track(rs.getLong("track_id"), rs.getString("track_title"), "", rs.getString("album_title"), rs.getInt("duration_seconds"), rs.getInt("play_count"), rs.getString("genre_name")));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 }

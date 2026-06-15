@@ -26,7 +26,7 @@ public class PostgreTrackDAO implements TrackDAO {
 		try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(SELECT_ALL)) {
 			while (rs.next()) list.add(new Track(rs.getLong("track_id"), rs.getString("track_title"), rs.getString("artist_name"),
 					rs.getString("album_title"), rs.getInt("duration_seconds"), rs.getInt("play_count"), rs.getString("genre_name")));
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -39,7 +39,7 @@ public class PostgreTrackDAO implements TrackDAO {
 				while (rs.next()) list.add(new Track(rs.getLong("track_id"), rs.getString("track_title"), rs.getString("artist_name"),
 						rs.getString("album_title"), rs.getInt("duration_seconds"), rs.getInt("play_count"), rs.getString("genre_name")));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -47,20 +47,20 @@ public class PostgreTrackDAO implements TrackDAO {
 	public void addNewTrack(String title, String albumTitle, String genreName, int durationSeconds) {
 		try (PreparedStatement ps = connection.prepareStatement(ADD)) {
 			ps.setString(1, title); ps.setString(2, albumTitle); ps.setString(3, genreName); ps.setInt(4, durationSeconds); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void updateTrack(long id, String title, String albumTitle, String genreName, int durationSeconds) {
 		try (PreparedStatement ps = connection.prepareStatement(UPDATE)) {
 			ps.setLong(1, id); ps.setString(2, title); ps.setString(3, albumTitle); ps.setString(4, genreName); ps.setInt(5, durationSeconds); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void deleteTrack(long id) {
 		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
 			ps.setLong(1, id); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 }

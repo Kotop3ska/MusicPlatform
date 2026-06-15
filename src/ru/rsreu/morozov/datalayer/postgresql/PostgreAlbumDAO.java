@@ -33,7 +33,7 @@ public class PostgreAlbumDAO implements AlbumDAO {
 						d != null ? d.toLocalDate() : null, rs.getString("release_type"),
 						rs.getDouble("avg_rating"), rs.getLong("review_count")));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -41,21 +41,21 @@ public class PostgreAlbumDAO implements AlbumDAO {
 	public void addNewAlbum(String title, String artistName, Date releaseDate, String releaseType) {
 		try (PreparedStatement ps = connection.prepareStatement(ADD)) {
 			ps.setString(1, title); ps.setString(2, artistName); ps.setDate(3, releaseDate); ps.setString(4, releaseType); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void updateAlbum(long id, String title, String artistName, Date releaseDate, String releaseType) {
 		try (PreparedStatement ps = connection.prepareStatement(UPDATE)) {
 			ps.setLong(1, id); ps.setString(2, title); ps.setString(3, artistName); ps.setDate(4, releaseDate); ps.setString(5, releaseType); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void deleteAlbum(long id) {
 		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
 			ps.setLong(1, id); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class PostgreAlbumDAO implements AlbumDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) list.add(new Track(rs.getLong("track_id"), rs.getString("track_title"), "", "", rs.getInt("duration_seconds"), rs.getInt("play_count"), rs.getString("genre_name")));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -82,7 +82,7 @@ public class PostgreAlbumDAO implements AlbumDAO {
 							ts != null ? ts.toLocalDateTime().toLocalDate() : null));
 				}
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 }

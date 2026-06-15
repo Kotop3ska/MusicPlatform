@@ -24,7 +24,7 @@ public class PostgreSubscriptionDAO implements SubscriptionDAO {
 		List<Subscription> list = new ArrayList<>();
 		try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(SELECT_ALL)) {
 			while (rs.next()) list.add(new Subscription(rs.getLong("subscription_id"), rs.getString("name"), rs.getDouble("price"), rs.getInt("duration_days")));
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -32,20 +32,20 @@ public class PostgreSubscriptionDAO implements SubscriptionDAO {
 	public void addNewSubscription(String name, Double price, int durationDays) {
 		try (PreparedStatement ps = connection.prepareStatement(ADD)) {
 			ps.setString(1, name); ps.setDouble(2, price); ps.setInt(3, durationDays); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void updateSubscription(long id, String name, Double price, int durationDays) {
 		try (PreparedStatement ps = connection.prepareStatement(UPDATE)) {
 			ps.setLong(1, id); ps.setString(2, name); ps.setDouble(3, price); ps.setInt(4, durationDays); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 
 	@Override
 	public void deleteSubscription(long id) {
 		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
 			ps.setLong(1, id); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 }

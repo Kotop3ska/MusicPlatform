@@ -12,6 +12,7 @@ public class MainFrame extends JFrame {
 	private final JPanel content = new JPanel(cards);
 	private final ResourceBundle msg = ResourceBundle.getBundle("resources.messages");
 	private final DAOFactory factory;
+	private DashboardPanel dashboardPanel;
 
 	public MainFrame() {
 		super("Music Platform — Админ-панель");
@@ -29,7 +30,8 @@ public class MainFrame extends JFrame {
 		factory = f;
 
 		getContentPane().add(createSidebar(), BorderLayout.WEST);
-		content.add(new DashboardPanel(factory), "dashboard");
+		dashboardPanel = new DashboardPanel(factory);
+		content.add(dashboardPanel, "dashboard");
 		content.add(new SubscriptionsPanel(factory), "subscriptions");
 		content.add(new UsersPanel(factory), "users");
 		content.add(new ArtistsPanel(factory), "artists");
@@ -82,7 +84,10 @@ public class MainFrame extends JFrame {
 			btn.setHorizontalAlignment(SwingConstants.LEFT);
 			btn.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 0));
 			btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			btn.addActionListener(e -> cards.show(content, item[1]));
+			btn.addActionListener(e -> {
+				cards.show(content, item[1]);
+				if ("dashboard".equals(item[1])) dashboardPanel.refresh();
+			});
 			btn.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(new Color(65, 72, 90)); }
 				public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(new Color(45, 52, 70)); }

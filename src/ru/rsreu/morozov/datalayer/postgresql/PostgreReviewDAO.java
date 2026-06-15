@@ -26,7 +26,7 @@ public class PostgreReviewDAO implements ReviewDAO {
 				list.add(new Review(rs.getLong("review_id"), rs.getString("username"), rs.getString("album_title"),
 						rs.getInt("rating"), ts != null ? ts.toLocalDateTime().toLocalDate() : null));
 			}
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 		return list;
 	}
 
@@ -34,6 +34,6 @@ public class PostgreReviewDAO implements ReviewDAO {
 	public void deleteReview(long id) {
 		try (PreparedStatement ps = connection.prepareStatement(DELETE)) {
 			ps.setLong(1, id); ps.execute();
-		} catch (SQLException e) { e.printStackTrace(); }
+		} catch (SQLException e) { throw new RuntimeException(e.getMessage(), e); }
 	}
 }
